@@ -106,8 +106,6 @@ class client(QWidget):
         text = self.keyboard.text()
         self.k_input.append(text) # no need for lock, append is thread safe
         self.keyboard.clear()
-        print(self.sm.get_state())
-#        self.proc()
         my_msg, peer_msg = self.get_msgs()
         self.system_msg += self.sm.proc(my_msg, peer_msg)
         self.output()
@@ -120,8 +118,6 @@ class client(QWidget):
             self.output()
             time.sleep(CHAT_WAIT)
         self.quit()
-        
-        print(self.sm.get_state())
         self.proc()
 #        my_msg, peer_msg = self.get_msgs()
 #        self.system_msg += self.sm.proc(my_msg, peer_msg)
@@ -161,7 +157,7 @@ class client(QWidget):
 #        k_input = self.update_msg()
         if len(self.k_input) > 0:
             my_msg = self.k_input.pop(0) # do I need to clear this variable everytime a user types smth? does the textbox clear?
-            print(my_msg)
+            #print(my_msg)
         if self.socket in read:
             peer_msg = self.recv()
             

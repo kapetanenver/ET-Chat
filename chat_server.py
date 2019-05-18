@@ -29,7 +29,6 @@ class Server:
         self.server.listen(5)
         self.all_sockets.append(self.server)
         # initialize past chat indices
-        self.indices = {}
         # sonnet
         self.sonnet = indexer.PIndex("AllSonnets.txt")
         self.users = self.get_users()
@@ -51,25 +50,14 @@ class Server:
             msg = json.loads(myrecv(sock))
             if len(msg) > 0:
             
-                if msg["action"] == "login":
-                    print("got this far - 69")
-                    
+                if msg["action"] == "login": 
                     if self.users[msg["name"]] == msg["password"]:
-                        print('works up to here')
                         name = msg["name"]
                         #remove from new_clients so they are not relogged in
                         self.new_clients.remove(sock)
                         #add to these dictionaries to use later
                         self.logged_name2sock[name] = sock
                         self.logged_sock2name[sock] = name
-                        print('also here')
-                        if name not in self.indices.keys():
-                            print('3')
-                            try:
-                                self.indices[name] = pkl.load(open(name + '.idx', 'rb'))
-                                
-                            except IOError:  # chat index does not exist, then create one
-                                self.indices[name] = indexer.Index(name)
                         self.group.join(name)
                         mysend(sock, json.dumps({"action": "login", "status": "success"}))
                         
@@ -77,45 +65,18 @@ class Server:
                     else:
                         mysend(sock,json.dumps({"action":"login", "status":"error","errormsg":"login error.\nTry again, or register an account."}))
                         
-                        #ignore, for self
-                        print('ok done - error1') 
-                        print(msg["name"])
-                        print(type(self.users.keys()))
-                        print(self.users.keys())
-                        
-                        if msg["name"] in self.users.keys():
-                            print('line 100 works')
-                        else:
-                            print('idk')
-                            
-                    #ignore this
-#                    elif msg["name"] not in self.users.keys():
-#                        print('got this far - 97')
-#                        mysend(sock,json.dumps({"action":"login", "status":"error","errormsg":"Username not recognized.\nPlease register an account."}))
-##                        self.all_sockets.remove(sock)
-##                        self.new_clients.remove(sock)
-#                        print('ok done - error2')
-#                        
-#                    else:
-#                        mysend(sock,json.dumps({"action":"login", "status":"error","errormsg":"IDK what is going on"}))
-##                        self.all_sockets.remove(sock)
-##                        self.new_clients.remove(sock)
-#                        print('ok done - error3')
-                
                 elif msg["action"] == "register":
-                    print('works up to here - 115')
                     
                     if msg["name"] in self.users.keys():
                         mysend(sock,json.dumps({"action":"register","status":"error","errormsg":"this username alreay exists, please try another."}))
-                        print("ok done - error1")
+                        
                         
                     elif msg["password"] != msg["cpassword"]:
-                        mysend(sock,json.dumps({"action":"register","status":"error","errormsg":"Passwords do not match, please try again"}))
-                        print("ok done - error2")
+                        mysend(sock,json.dumps({"action":"register","status":"error","errormsg":"Passwords do not match, please try again"}))  
                    
                     else:
                         self.users[msg["name"]] = msg["password"]
-                        print(self.users)
+                        
                         file = open("up3_user_database.txt","w")
                         self.users = json.dumps(self.users)
                         file.write(self.users)
