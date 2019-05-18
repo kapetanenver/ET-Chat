@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QCoreApplication
 import registration_window
-import client_window as clt
+from client_window import *
 import argparse
 from chat_utils import *
 import socket
@@ -94,14 +94,12 @@ class login(QWidget):
         
     def client_w(self):
 
-        self.cw = clt.client(self.socket,self.user_input.text()) 
+        self.cw = client(self.socket,self.user_input.text()) 
         self.cw.client_window()
-        self.cw.receive()
-        
 
         
-    #def run_chat(self):
-#        self.cw.run_chat()
+    def run_chat(self):
+        self.cw.run_chat()
         
     #opens a chat window when login, or displays error message
     def open_client(self):

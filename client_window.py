@@ -99,16 +99,6 @@ class client(QWidget):
         layout.addWidget(self.send_button)
         
         self.horizontalGroupBox.setLayout(layout)
-
-    def receive():
-    
-        while True:
-            try:
-                msg = self.socket.recv(1024)
-                self.display.append(msg)
-            
-            except OSError:  # Possibly client has left the chat.
-                break
     
     
     #get user input
@@ -117,7 +107,9 @@ class client(QWidget):
         self.k_input.append(text) # no need for lock, append is thread safe
         self.keyboard.clear()
         print(self.sm.get_state())
-        self.proc()
+#        self.proc()
+        my_msg, peer_msg = self.get_msgs()
+        self.system_msg += self.sm.proc(my_msg, peer_msg)
         self.output()
         time.sleep(CHAT_WAIT)
         
@@ -158,7 +150,7 @@ class client(QWidget):
         self.socket.close()
         self.hide()
 
-    def recve(self):
+    def recv(self):
         return myrecv(self.socket)
 
     
@@ -171,8 +163,8 @@ class client(QWidget):
             my_msg = self.k_input.pop(0) # do I need to clear this variable everytime a user types smth? does the textbox clear?
             print(my_msg)
         if self.socket in read:
-            peer_msg = self.recve()
-        
+            peer_msg = self.recv()
+            
         return my_msg, peer_msg
     
     def output(self):
@@ -206,7 +198,6 @@ class client(QWidget):
 #
 #
 
-        
 
 
 if __name__ == '__main__':
